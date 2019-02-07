@@ -2,7 +2,7 @@ package com.redbird.letsshopapp2;
 
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.github.clans.fab.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,10 +19,13 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.item_recycler_view)
-    private RecyclerView mItemRecyclerView;
+    @BindView(R.id.item_recycler_view) RecyclerView mItemRecyclerView;
     private RecyclerView.Adapter mItemAdapter;
     private RecyclerView.LayoutManager mItemLayoutManager;
+
+//    @BindView(R.id.add_item_floating_menu_item) FloatingActionButton mAddItemFloatingActionButton;
+//    @BindView(R.id.snap_shopping_list_floating_menu_item) FloatingActionButton mSnapShoppingListFloatingActionButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
+        setupRecyclerView();
     }
 
     private void setupRecyclerView() {
@@ -38,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         mItemLayoutManager = new LinearLayoutManager(this);
         mItemRecyclerView.setLayoutManager(mItemLayoutManager);
 
-        mItemAdapter = new
-
+        mItemAdapter = new ItemAdapter(Util.getDummyItems());
+        mItemRecyclerView.setAdapter(mItemAdapter);
     }
 
     @Override
@@ -64,9 +68,15 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R.id.camera_fab)
-    public void cameraFloatingActionButtonClicked(View view) {
-        Snackbar.make(view, "Here be dragons", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+    @OnClick(R.id.add_item_floating_menu_item)
+    public void addItemFloatingActionButtonClicked(View view) {
+        Util.showSnackBar(view, "Add item clicked!");
     }
+
+    @OnClick(R.id.snap_shopping_list_floating_menu_item)
+    public void cameraFloatingActionButtonClicked(View view) {
+        Util.showSnackBar(view, "Camera clicked!");
+    }
+
+
 }
