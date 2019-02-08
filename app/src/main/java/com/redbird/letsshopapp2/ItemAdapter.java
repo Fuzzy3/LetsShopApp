@@ -39,6 +39,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         return mDataset.size();
     }
 
+    public void setItemList(List<ShoppingItem> itemList) {
+        mDataset = itemList;
+    }
+
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.list_cell_item_title) TextView mItemTitle;

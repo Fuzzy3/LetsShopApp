@@ -1,7 +1,14 @@
 package com.redbird.letsshopapp2.model;
 
-public class ShoppingItem {
+import java.util.UUID;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class ShoppingItem extends RealmObject {
+
+    @PrimaryKey
+    private String mId;
     private String title;
     private int amount;
 
@@ -22,8 +29,13 @@ public class ShoppingItem {
     }
 
     public ShoppingItem(String title, int amount) {
+        mId = UUID.randomUUID().toString();
         this.title = title;
         this.amount = amount;
+    }
+
+    public ShoppingItem() {
+
     }
 
 }

@@ -2,11 +2,12 @@ package com.redbird.letsshopapp2;
 
 import android.os.Bundle;
 
-import com.github.clans.fab.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.github.clans.fab.FloatingActionMenu;
+import com.redbird.letsshopapp2.model.ShoppingItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -17,12 +18,15 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.List;
 
+public class MainActivity extends AppCompatActivity implements AddItemDialogFragment.AddItemDialogListener, MainView {
+
+    @BindView(R.id.main_floating_action_menu) FloatingActionMenu mFloatingActionMenu;
     @BindView(R.id.item_recycler_view) RecyclerView mItemRecyclerView;
-    private RecyclerView.Adapter mItemAdapter;
+    private ItemAdapter mItemAdapter;
     private RecyclerView.LayoutManager mItemLayoutManager;
-
+    private MainPresenter mMainPresenter;
 //    @BindView(R.id.add_item_floating_menu_item) FloatingActionButton mAddItemFloatingActionButton;
 //    @BindView(R.id.snap_shopping_list_floating_menu_item) FloatingActionButton mSnapShoppingListFloatingActionButton;
 
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mMainPresenter = new MainPresenterImpl(this, this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -42,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         mItemLayoutManager = new LinearLayoutManager(this);
         mItemRecyclerView.setLayoutManager(mItemLayoutManager);
 
-        mItemAdapter = new ItemAdapter(Util.getDummyItems());
+        mItemAdapter = new ItemAdapter(mMainPresenter.getShoppingItemList());
         mItemRecyclerView.setAdapter(mItemAdapter);
     }
 
@@ -68,15 +73,36 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void showAddItemDialog() {
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new AddItemDialogFragment();
+        dialog.show(getSupportFragmentManager(), "AddItemDialog");
+    }
+
     @OnClick(R.id.add_item_floating_menu_item)
     public void addItemFloatingActionButtonClicked(View view) {
-        Util.showSnackBar(view, "Add item clicked!");
+        mFloatingActionMenu.close(false);
+        showAddItemDialog();
     }
 
     @OnClick(R.id.snap_shopping_list_floating_menu_item)
     public void cameraFloatingActionButtonClicked(View view) {
-        Util.showSnackBar(view, "Camera clicked!");
+        mFloatingActionMenu.close(false);
     }
 
+    @Override
+    public void onAddItemDialogAddClick(String newItem) {
+        mMainPresenter.itemAdded(new ShoppingItem(newItem, 1));
+    }
 
+    @Override
+    public void onAddItemDialogCancelClick() {
+
+    }
+
+    @Override
+    public void setShoppingItemList(List<ShoppingItem> itemList) {
+        mItemAdapter.setItemList(itemList);
+        mItemAdapter.notifyDataSetChanged();
+    }
 }
