@@ -6,5 +6,9 @@ import java.util.List;
 
 public interface MainPresenter {
     void itemAdded(ShoppingItem shoppingItem);
+    void itemUpdated(ShoppingItem shoppingItem);
     List<ShoppingItem> getShoppingItemList();
+    void itemListAdded(List<ShoppingItem> shoppingItems);
+    void deleteAllTasks();
+    void deleteAllCheckedItems();
 }

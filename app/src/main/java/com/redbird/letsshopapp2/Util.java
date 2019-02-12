@@ -1,6 +1,8 @@
 package com.redbird.letsshopapp2;
 
+import android.content.Context;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.redbird.letsshopapp2.model.ShoppingItem;
@@ -35,5 +37,9 @@ public class Util {
 
     public static void showSnackBar(View view, String input) {
         Snackbar.make(view, input, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+    }
+
+    public static void showShortToast(Context context, String input) {
+        Toast.makeText(context, input, Toast.LENGTH_SHORT).show();
     }
 }

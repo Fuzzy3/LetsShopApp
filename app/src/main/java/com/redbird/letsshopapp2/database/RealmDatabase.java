@@ -28,10 +28,10 @@ public class RealmDatabase {
         mRealm = Realm.getDefaultInstance();
     }
 
-    public void addShoppingItem(ShoppingItem shoppingItem) {
+    public void addOrUpdateShoppingItem(ShoppingItem shoppingItem) {
         final ShoppingItem fShoppingItem = shoppingItem;
         mRealm.executeTransaction(realm -> {
-            mRealm.copyToRealm(fShoppingItem);
+            mRealm.copyToRealmOrUpdate(fShoppingItem);
         });
     }
 
@@ -43,6 +43,18 @@ public class RealmDatabase {
         return mRealm.where(ShoppingItem.class).findAll();
     }
 
+    public void deleteAllItems() {
+        mRealm.executeTransaction(realm -> mRealm.where(ShoppingItem.class).findAll().deleteAllFromRealm());
+    }
 
+    public void deleteAllCheckedItems() {
+        mRealm.executeTransaction(realm -> mRealm.where(ShoppingItem.class).equalTo("isChecked", true).findAll().deleteAllFromRealm());
+    }
 
+    public void setCheckedOnItem(ShoppingItem shoppingItem, boolean checked) {
+        final ShoppingItem fShoppingItem = shoppingItem;
+        mRealm.executeTransaction(realm -> {
+            fShoppingItem.setChecked(checked);
+        });
+    }
 }

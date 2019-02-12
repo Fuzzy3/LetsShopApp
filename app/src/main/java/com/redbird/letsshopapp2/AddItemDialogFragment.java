@@ -3,25 +3,28 @@ package com.redbird.letsshopapp2;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.Objects;
+import com.redbird.letsshopapp2.model.ShoppingItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AddItemDialogFragment extends DialogFragment {
 
     private AddItemDialogListener mListener;
+    private List<ShoppingItem> mShoppingItemsList;
     @BindView(R.id.add_item_edittext) EditText mAddItemEditText;
 
     @Override
@@ -45,19 +48,45 @@ public class AddItemDialogFragment extends DialogFragment {
 
         View view = View.inflate(getContext(), R.layout.dialog_additem, null);
         ButterKnife.bind(this, view);
+        mAddItemEditText.requestFocus();
+        mShoppingItemsList = new ArrayList<>();
 
         builder.setView(view)
+                .setNegativeButton(R.string.close, (dialogInterface, i) -> mListener.onDialogClosed(mShoppingItemsList))
+                .setNeutralButton(R.string.AddAnother, null)
                 .setPositiveButton(R.string.add, (dialogInterface, i) -> {
-                    mListener.onAddItemDialogAddClick(mAddItemEditText.getText().toString());
-                })
-                .setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
-                    mListener.onAddItemDialogCancelClick();
+                    mShoppingItemsList.add(new ShoppingItem(mAddItemEditText.getText().toString(), 1));
+                    mListener.onDialogClosed(mShoppingItemsList);
                 });
+
         return builder.create();
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        AlertDialog alertDialog = (AlertDialog) getDialog();
+        Button okButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+        okButton.setOnClickListener(v -> {
+            addAnotherItem();
+        });
+    }
+
+    private void addAnotherItem() {
+        String input = mAddItemEditText.getText().toString();
+        Util.showShortToast(getContext(), input + " added to your shopping list");
+        mShoppingItemsList.add(new ShoppingItem(input, 1));
+        mAddItemEditText.getText().clear();
+    }
+
     public interface AddItemDialogListener {
-        void onAddItemDialogAddClick(String newItem);
-        void onAddItemDialogCancelClick();
+        void onDialogClosed(List<ShoppingItem> shoppingItems);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 }

@@ -8,6 +8,7 @@ import com.redbird.letsshopapp2.model.ShoppingItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -45,9 +46,13 @@ public class MainActivity extends AppCompatActivity implements AddItemDialogFrag
     private void setupRecyclerView() {
         mItemRecyclerView.setHasFixedSize(true);
         mItemLayoutManager = new LinearLayoutManager(this);
+        ((LinearLayoutManager) mItemLayoutManager).setOrientation(RecyclerView.VERTICAL);
         mItemRecyclerView.setLayoutManager(mItemLayoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mItemRecyclerView.getContext(),
+                DividerItemDecoration.VERTICAL);
+        mItemRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        mItemAdapter = new ItemAdapter(mMainPresenter.getShoppingItemList());
+        mItemAdapter = new ItemAdapter(mMainPresenter.getShoppingItemList(), mItemRecyclerView.getContext());
         mItemRecyclerView.setAdapter(mItemAdapter);
     }
 
@@ -66,7 +71,12 @@ public class MainActivity extends AppCompatActivity implements AddItemDialogFrag
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_delete_all) {
+            mMainPresenter.deleteAllTasks();
+            return true;
+        }
+        if (id == R.id.action_delete_checked) {
+            mMainPresenter.deleteAllCheckedItems();
             return true;
         }
 
@@ -91,13 +101,8 @@ public class MainActivity extends AppCompatActivity implements AddItemDialogFrag
     }
 
     @Override
-    public void onAddItemDialogAddClick(String newItem) {
-        mMainPresenter.itemAdded(new ShoppingItem(newItem, 1));
-    }
-
-    @Override
-    public void onAddItemDialogCancelClick() {
-
+    public void onDialogClosed(List<ShoppingItem> shoppingItems) {
+        mMainPresenter.itemListAdded(shoppingItems);
     }
 
     @Override

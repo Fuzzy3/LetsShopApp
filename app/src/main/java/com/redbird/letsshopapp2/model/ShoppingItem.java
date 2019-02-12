@@ -11,6 +11,7 @@ public class ShoppingItem extends RealmObject {
     private String mId;
     private String title;
     private int amount;
+    private boolean isChecked;
 
     public String getTitle() {
         return title;
@@ -38,4 +39,11 @@ public class ShoppingItem extends RealmObject {
 
     }
 
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 }
