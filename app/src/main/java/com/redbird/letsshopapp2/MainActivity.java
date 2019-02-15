@@ -1,9 +1,14 @@
 package com.redbird.letsshopapp2;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.redbird.letsshopapp2.model.ShoppingItem;
+
+import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -15,16 +20,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity implements AddItemDialogFragment.AddItemDialogListener, MainView {
 
-    @BindView(R.id.main_floating_action_menu) FloatingActionMenu mFloatingActionMenu;
-    @BindView(R.id.item_recycler_view) RecyclerView mItemRecyclerView;
+    public static final String TAG = MainActivity.class.getSimpleName();
+
+    @BindView(R.id.main_floating_action_menu)
+    FloatingActionMenu mFloatingActionMenu;
+    @BindView(R.id.item_recycler_view)
+    RecyclerView mItemRecyclerView;
     private ItemAdapter mItemAdapter;
     private RecyclerView.LayoutManager mItemLayoutManager;
     private MainPresenter mMainPresenter;
@@ -79,14 +82,27 @@ public class MainActivity extends AppCompatActivity implements AddItemDialogFrag
             mMainPresenter.deleteAllCheckedItems();
             return true;
         }
+        if (id == R.id.action_copy_to_clipboard) {
+            copyShoppingListToClipBoard();
+            return true;
+        }
+        if (id == R.id.action_copy_from_clipboard) {
+            pasteShoppingListFromClipBoard();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void pasteShoppingListFromClipBoard() {
+        String fromClipBoard = Util.getTextFromClipBoard(this);
+        mMainPresenter.itemListAdded(Util.getShoppingItemListFromString(fromClipBoard));
     }
 
     public void showAddItemDialog() {
         // Create an instance of the dialog fragment and show it
         DialogFragment dialog = new AddItemDialogFragment();
-        dialog.show(getSupportFragmentManager(), "AddItemDialog");
+        dialog.show(getSupportFragmentManager(), AddItemDialogFragment.TAG);
     }
 
     @OnClick(R.id.add_item_floating_menu_item)
@@ -110,4 +126,11 @@ public class MainActivity extends AppCompatActivity implements AddItemDialogFrag
         mItemAdapter.setItemList(itemList);
         mItemAdapter.notifyDataSetChanged();
     }
+
+    private void copyShoppingListToClipBoard() {
+        Util.copyTextToClipBoard(Util.getListAsString(Util.getUncheckedList(mMainPresenter.getShoppingItemList())), TAG, this);
+        Util.showShortToast(getApplicationContext(), getString(R.string.text_was_copied_to_clipboard));
+    }
+
+
 }

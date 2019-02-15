@@ -9,7 +9,20 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/action_delete_checked"
-        android:orderInCategory="100"
+        android:orderInCategory="101"
         android:title="@string/delete_all_checked"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_copy_to_clipboard"
+        android:orderInCategory="102"
+        android:title="@string/copy_to_clipboard"
+        app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/action_copy_from_clipboard"
+        android:orderInCategory="102"
+        android:title="@string/copy_from_clipboard"
         app:showAsAction="never" />
 </menu>

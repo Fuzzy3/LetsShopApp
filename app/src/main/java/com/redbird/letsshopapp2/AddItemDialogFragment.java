@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.material.tabs.TabLayout;
 import com.redbird.letsshopapp2.model.ShoppingItem;
 
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AddItemDialogFragment extends DialogFragment {
+
+    public static final String TAG = AddItemDialogFragment.class.getSimpleName();
 
     private AddItemDialogListener mListener;
     private List<ShoppingItem> mShoppingItemsList;

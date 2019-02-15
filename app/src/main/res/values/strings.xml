@@ -9,4 +9,7 @@
     <string name="close">Close</string>
     <string name="delete_all">Delete all items</string>
     <string name="delete_all_checked">Delete all checked</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
+    <string name="text_was_copied_to_clipboard">Shopping list was copied</string>
+    <string name="copy_from_clipboard">Paste from clipboard</string>
 </resources>

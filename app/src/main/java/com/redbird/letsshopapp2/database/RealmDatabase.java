@@ -40,7 +40,7 @@ public class RealmDatabase {
     }
 
     public List<ShoppingItem> getShoppingItemList() {
-        return mRealm.where(ShoppingItem.class).findAll();
+        return mRealm.where(ShoppingItem.class).findAll().sort("isChecked");
     }
 
     public void deleteAllItems() {
